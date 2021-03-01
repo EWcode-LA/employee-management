@@ -57,6 +57,10 @@ function start() {
           addDepartment();
           break;  
 
+        case "Add Roles":
+          addRole();
+          break; 
+
         case "Quit":
           connection.end();
           break;
@@ -135,6 +139,40 @@ function viewRoles() {
     start();
   });
 }
+
+function addRole() {
+  // (1) Declare a variable that will hold the SQL statement for inserting
+  // new data into the 'role' table
+  // let sequelQuery = "INSERT INTO role (title) VALUES";
+  // (2) Use inquirer.prompt() to ask questions for the user
+  // that will be needed to populate the 'role' table
+  console.log('addRole');
+  inquirer.prompt ([{
+      name: "role",
+      message: "What is the title of the role that you want to add?"
+  }
+])
+  .then(function (answers) {
+    // Check if there's no answer, in which case we exit out
+    if (!answers.role) {
+      return;
+    }
+
+    // (3) When you receive the answer from the user, use the data
+    // as part of the insert statement
+
+    let sequelQuery = `INSERT INTO role (title) VALUES ('${answers.role}')`;
+
+    // (4) Use your connection.query() method to execute the insert statement
+    connection.query(sequelQuery, function (err, res) {
+      if (err) throw err;
+      // (5) Display all the roles again to confirm that the new
+      // role has been added
+      viewRoles();
+    });
+  });
+} 
+
 
 function addEmployee() {
   inquirer.prompt([
