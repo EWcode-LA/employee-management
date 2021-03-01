@@ -30,7 +30,12 @@ CREATE TABLE employee(
     manager_id INT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (role_id)
-    references role(id),
-    FOREIGN KEY (manager_id)
-    references manager(id)
+    references role(id)
 );
+-- Error 1824 :Failed to open the referenced table 'manager'
+-- CREATE TABLE manager(
+-- manager_id INT NOT NULL,
+-- FOREIGN KEY (manager_id) 
+-- references employee(employee_id),
+-- PRIMARY KEY (manager_id)
+-- );
