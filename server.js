@@ -32,11 +32,12 @@ function start() {
       name: "selection",
       message: "Select an action",
       choices: [
-        "View Departments", 
-        "View Roles", 
-        "View Employees", 
+        "View Departments",
+        "View Roles",
+        "View Employees",
         "Add Department",
-        "Quit"
+        "Add Role",
+        "Quit",
       ],
     })
     .then(function (answers) {
@@ -55,18 +56,17 @@ function start() {
 
         case "Add Department":
           addDepartment();
-          break;  
+          break;
 
         case "Add Roles":
           addRole();
-          break; 
+          break;
 
         case "Quit":
           connection.end();
           break;
 
         default:
-          
       }
     });
 }
@@ -103,31 +103,33 @@ function addDepartment() {
   // let sequelQuery = "INSERT INTO department (name) VALUES";
   // (2) Use inquirer.prompt() to ask questions for the user
   // that will be needed to populate the 'department' table
-  console.log('addDepartment');
-  inquirer.prompt ([{
-      name: "department",
-      message: "What is the name of the department that you want to add?"
-  }
-])
-  .then(function (answers) {
-    // Check if there's no answer, in which case we exit out
-    if (!answers.department) {
-      return;
-    }
+  console.log("addDepartment");
+  inquirer
+    .prompt([
+      {
+        name: "department",
+        message: "What is the name of the department that you want to add?",
+      },
+    ])
+    .then(function (answers) {
+      // Check if there's no answer, in which case we exit out
+      if (!answers.department) {
+        return;
+      }
 
-    // (3) When you receive the answer from the user, use the data
-    // as part of the insert statement
+      // (3) When you receive the answer from the user, use the data
+      // as part of the insert statement
 
-    let sequelQuery = `INSERT INTO department (name) VALUES ('${answers.department}')`;
+      let sequelQuery = `INSERT INTO department (name) VALUES ('${answers.department}')`;
 
-    // (4) Use your connection.query() method to execute the insert statement
-    connection.query(sequelQuery, function (err, res) {
-      if (err) throw err;
-      // (5) Display all the departments again to confirm that the new
-      // department has been added
-      viewDepartments();
+      // (4) Use your connection.query() method to execute the insert statement
+      connection.query(sequelQuery, function (err, res) {
+        if (err) throw err;
+        // (5) Display all the departments again to confirm that the new
+        // department has been added
+        viewDepartments();
+      });
     });
-  });
 }
 
 function viewRoles() {
@@ -146,68 +148,71 @@ function addRole() {
   // let sequelQuery = "INSERT INTO role (title) VALUES";
   // (2) Use inquirer.prompt() to ask questions for the user
   // that will be needed to populate the 'role' table
-  console.log('addRole');
-  inquirer.prompt ([{
-      name: "role",
-      message: "What is the title of the role that you want to add?"
-  }
-])
-  .then(function (answers) {
-    // Check if there's no answer, in which case we exit out
-    if (!answers.role) {
-      return;
-    }
+  console.log("addRole");
+  inquirer
+    .prompt([
+      {
+        name: "role",
+        message: "What is the title of the role that you want to add?",
+      },
+      { name: "salary", message: "What is the salary of the role?" },
+      { name: "department id", message: "What is the department id?" },
+    ])
+    .then(function (answers) {
+      // Check if there's no answer, in which case we exit out
+      if (!answers.role) {
+        return;
+      }
 
-    // (3) When you receive the answer from the user, use the data
-    // as part of the insert statement
+      // (3) When you receive the answer from the user, use the data
+      // as part of the insert statement
 
-    let sequelQuery = `INSERT INTO role (title) VALUES ('${answers.role}')`;
+      let sequelQuery = `INSERT INTO role (title) VALUES ('${answers.role}')`;
 
-    // (4) Use your connection.query() method to execute the insert statement
-    connection.query(sequelQuery, function (err, res) {
-      if (err) throw err;
-      // (5) Display all the roles again to confirm that the new
-      // role has been added
-      viewRoles();
+      // (4) Use your connection.query() method to execute the insert statement
+      connection.query(sequelQuery, function (err, res) {
+        if (err) throw err;
+        // (5) Display all the roles again to confirm that the new
+        // role has been added
+        viewRoles();
+      });
     });
-  });
-} 
-
-
-function addEmployee() {
-  inquirer.prompt([
-    {
-      name: "firstName",
-      type: "input",
-      message: "What is the employee first name?",
-    },
-    {
-      name: "lastName",
-      type: "input",
-      message: "What is the employee last name?",
-    },
-
-    {
-      name: "role",
-      type: "list",
-      choices: [
-        "Sales Lead",
-        "Salesperson",
-        "Lead Engineer",
-        "Software Engineer",
-        "Account Manager",
-        "Accountant",
-        "Legal Team Lead",
-      ],
-      message: "What is the employee role?",
-    },
-    {
-      name: "manager",
-      type: "list",
-      choices: ["none"],
-      message: "What is the employee's manager?",
-    },
-  ]);
 }
+
+// function addEmployee() {
+//   inquirer.prompt([
+//     {
+//       name: "firstName",
+//       type: "input",
+//       message: "What is the employee first name?",
+//     },
+//     {
+//       name: "lastName",
+//       type: "input",
+//       message: "What is the employee last name?",
+//     },
+
+//     {
+//       name: "role",
+//       type: "list",
+//       choices: [
+//         "Sales Lead",
+//         "Salesperson",
+//         "Lead Engineer",
+//         "Software Engineer",
+//         "Account Manager",
+//         "Accountant",
+//         "Legal Team Lead",
+//       ],
+//       message: "What is the employee role?",
+//     },
+//     {
+//       name: "manager",
+//       type: "list",
+//       choices: ["none"],
+//       message: "What is the employee's manager?",
+//     },
+//   ]);
+// }
 
 start();
