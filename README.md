@@ -16,7 +16,7 @@ npm install
 ```
 
 ```bash
-npm server.js 
+node server.js 
 ```
 
 ## License
