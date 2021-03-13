@@ -37,6 +37,8 @@ function start() {
         "View Employees",
         "Add Department",
         "Add Role",
+        "Add Employee",
+        "Update Employee",
         "Quit",
       ],
     })
@@ -58,8 +60,16 @@ function start() {
           addDepartment();
           break;
 
-        case "Add Roles":
+        case "Add Role":
           addRole();
+          break;
+
+        case "Add Employee":
+          addEmployee();
+          break;
+
+          case "Update Employee":
+          updateEmployee();
           break;
 
         case "Quit":
@@ -156,7 +166,7 @@ function addRole() {
         message: "What is the title of the role that you want to add?",
       },
       { name: "salary", message: "What is the salary of the role?" },
-      { name: "department id", message: "What is the department id?" },
+      { name: "department", message: "What is the department id?" },
     ])
     .then(function (answers) {
       // Check if there's no answer, in which case we exit out
@@ -167,7 +177,7 @@ function addRole() {
       // (3) When you receive the answer from the user, use the data
       // as part of the insert statement
 
-      let sequelQuery = `INSERT INTO role (title) VALUES ('${answers.role}')`;
+      let sequelQuery = `INSERT INTO role (title, salary, department_id) VALUES ('${answers.role}','${answers.salary}','${answers.department}')`;
 
       // (4) Use your connection.query() method to execute the insert statement
       connection.query(sequelQuery, function (err, res) {
@@ -179,40 +189,68 @@ function addRole() {
     });
 }
 
-// function addEmployee() {
-//   inquirer.prompt([
-//     {
-//       name: "firstName",
-//       type: "input",
-//       message: "What is the employee first name?",
-//     },
-//     {
-//       name: "lastName",
-//       type: "input",
-//       message: "What is the employee last name?",
-//     },
+function addEmployee() {
+  const sequelQuery = "SELECT * FROM role";
+  connection.query(sequelQuery, function (err, res) {
+    if (err) throw err;
 
-//     {
-//       name: "role",
-//       type: "list",
-//       choices: [
-//         "Sales Lead",
-//         "Salesperson",
-//         "Lead Engineer",
-//         "Software Engineer",
-//         "Account Manager",
-//         "Accountant",
-//         "Legal Team Lead",
-//       ],
-//       message: "What is the employee role?",
-//     },
-//     {
-//       name: "manager",
-//       type: "list",
-//       choices: ["none"],
-//       message: "What is the employee's manager?",
-//     },
-//   ]);
-// }
+    inquirer
+      .prompt([
+        {
+          name: "firstName",
+          type: "input",
+          message: "What is the employee first name?",
+        },
+        {
+          name: "lastName",
+          type: "input",
+          message: "What is the employee last name?",
+        },
+        {
+          name: "role",
+          type: "list",
+          choices: res.map((role) => {
+            return {
+              name: role.title,
+              value: role.id,
+            };
+          }),
+          message: "What is the employee role?",
+        },
+        {
+          name: "manager",
+          message:
+            "What is the manager id of the employees manager if necessary?",
+        },
+      ])
+      .then(function (answers) {
+        // Check if there's no answer, in which case we exit out
+        if (!answers.firstName) {
+          return;
+        }
+
+        // (3) When you receive the answer from the user, use the data
+        // as part of the insert statement
+
+        let sequelQuery = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ('${answers.firstName}','${answers.lastName}','${answers.role}','${answers.manager}')`;
+
+        // (4) Use your connection.query() method to execute the insert statement
+        connection.query(sequelQuery, function (err, res) {
+          if (err) throw err;
+          // (5) Display all the employees again to confirm that the new
+          // employee has been added
+          viewEmployees();
+        });
+      });
+  });
+}
+
+function updateEmployee() {
+  const sequelQuery = "SELECT * FROM employee";
+  //Inside the connection.query callback function, need to get the list of roles by performming the query "SELECT*FROM role"
+  connection.query(sequelQuery, function (err, res) {
+    if (err) throw err;
+
+}
 
 start();
